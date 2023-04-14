@@ -1,0 +1,25 @@
+
+header {
+  display: block;
+  padding: 25px;
+  text-align: center;
+  background: #171a21;
+  color: #878684;
+  font-size: 20px;
+}
+
+footer {
+    display: block;
+    text-align: center;
+    padding: 5px;
+    color: #8f98a0;
+    font-size: 15px;
+    background-color: #171a21;
+}
+
+hr {
+    border: none;
+    background-color: #8f98a0;
+    color: #8f98a0;
+    height: 0.1px;
+   }
