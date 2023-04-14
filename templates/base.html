@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="C:\Users\smirn\Documents\stem-2.0\static\css\style.css">
+    <title>{{ title }}</title>
+
+</head>
+
+<body bgcolor="#1b2838" leftmargin="0" topmargin="0">
+
+<header>
+   <img src="C:\Users\smirn\Documents\stem-2.0\static\img\logo_steam.png" width="150" height="50" alt="Stem">
+    {% if current_user.is_authenticated %}
+        <a class="navbar-brand" href="/logout">{{ current_user.name }}</a>
+    {% else %}
+    <p>
+        <a href="/register">Зарегистрироваться</a>
+        <a href="/login">Войти</a>
+    </p>
+        {% endif %}
+    </nav>
+</header>
+<!-- Begin page content -->
+<main role="main" class="container">
+    {% block content %}{% endblock %}
+</main>
+
+<footer>
+    <hr>
+    <img align="left" src="C:\Users\smirn\Documents\stem-2.0\static\img\footerLogo_valve_new1.png" width="85" height="25" alt="Stem">
+    <p>© 2023 Volvo Corporation. Все права защищены. Все торговые марки являются собственностью соответствующих владельцев в США и других странах.</p>
+    <p>НДС включён во все цены, где он применим.</p>
+    <hr>
+</footer>
+</body>
+</html>
