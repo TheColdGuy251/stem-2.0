@@ -10,7 +10,7 @@
 
 <body bgcolor="#1b2838" leftmargin="0" topmargin="0">
 <header>
-   <img src="C:\Users\smirn\Documents\stem-2.0\static\img\logo_steam.png" width="150" height="50" alt="Stem">
+   <img src="/static/img/logo_steam.png" width="150" height="50" alt="Stem">
     {% if current_user.is_authenticated %}
         <a class="navbar-brand" href="/logout">{{ current_user.name }}</a>
     {% else %}
