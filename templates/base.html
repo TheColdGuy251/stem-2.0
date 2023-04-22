@@ -3,32 +3,56 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="C:\Users\smirn\Documents\stem-2.0\static\css\style.css">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/style.css">
     <title>{{ title }}</title>
 
 </head>
 
 <body bgcolor="#1b2838" leftmargin="0" topmargin="0">
 <header>
+    <header_inside>
+    <a href="/">
    <img src="/static/img/logo_steam.png" width="150" height="50" alt="Stem">
+        <a/>
     {% if current_user.is_authenticated %}
-        <a class="navbar-brand" href="/logout">{{ current_user.name }}</a>
+        <div align="center">
+        <a href="/library">Библиотека</a>
+        </div>
+        <div align="right">
+            {{ current_user.name }}</div>
+        <div align="center">
+        <a href="/friends">Друзья</a>
+        </div>
+         <div align="right">
+        <a href="/logout">Выйти</a>
+        </div>
     {% else %}
-    <p>
-        <a href="/register">Зарегистрироваться</a>
+
+    <div align="right">
         <a href="/login">Войти</a>
-    </p>
+            |
+        <a href="/register">Зарегистрироваться</a>
+
+    </header_inside>
+    </div>
         {% endif %}
 </header>
+
 <!-- Begin page content -->
+<work_page>
 <main role="main" class="container">
     {% block content %}{% endblock %}
 </main>
+</work_page>
 
 <footer>
     <hr>
-    <img align="left" src="C:\Users\smirn\Documents\stem-2.0\static\img\footerLogo_valve_new1.png" width="85" height="25" alt="Stem">
-    <p>© 2023 Volvo Corporation. Все права защищены. Все торговые марки являются собственностью соответствующих владельцев в США и других странах.</p>
+    <img align="left" src="/static/img/footerLogo_valve_new1.png" width="85" height="25" alt="Stem">
+    <p>© 2023 Volvo Corporation. Все права защищены. Все торговые марки являются собственностью соответствующих владельцев в РФ и других странах.</p>
     <p>НДС включён во все цены, где он применим.</p>
     <hr>
 </footer>

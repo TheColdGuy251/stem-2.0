@@ -2,6 +2,8 @@ from flask import Flask, render_template, redirect, request, make_response, sess
 from data import db_session, news_api
 from data.users import User
 from data.news import News
+from data.games import Games
+from data.friends import Friends
 from forms.register_form import RegisterForm
 from forms.login_form import LoginForm
 from forms.news_form import NewsForm
@@ -181,6 +183,41 @@ def news_delete(id):
     else:
         abort(404)
     return redirect('/')
+
+
+@app.route('/library', methods=['GET', 'POST'])
+@login_required
+def library():
+    form = NewsForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        news = News()
+        news.title = form.title.data
+        news.content = form.content.data
+        news.is_private = form.is_private.data
+        current_user.news.append(news)
+        db_sess.merge(current_user)
+        db_sess.commit()
+        return redirect('/')
+    return render_template('library.html', title='Библиотека',
+                           form=form)
+
+@app.route('/friends', methods=['GET', 'POST'])
+@login_required
+def friends():
+    form = NewsForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        news = News()
+        news.title = form.title.data
+        news.content = form.content.data
+        news.is_private = form.is_private.data
+        current_user.news.append(news)
+        db_sess.merge(current_user)
+        db_sess.commit()
+        return redirect('/')
+    return render_template('library.html', title='Библиотека',
+                           form=form)
 
 
 if __name__ == '__main__':
