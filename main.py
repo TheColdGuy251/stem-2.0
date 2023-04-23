@@ -281,7 +281,7 @@ def chat():
                     db_sess.commit()
             else:
                 form.friend_id.errors.append("Пользователя не существует (как и твоих друзей)")
-    return render_template('chat.html', title='Друзья и чат',
+    return render_template('chat.html', title='Друзья и чаты',
                            form=form)
 
 
