@@ -1,7 +1,23 @@
-{% extends "base.html" %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <title>{{ title }}</title>
 
-{% block content %}
-<h1>Друзья</h1>
+</head>
+
+<body bgcolor="#1b2838" leftmargin="0" topmargin="0">
+<!-- Begin page content -->
+<div class="chat-style">
+<main role="main" class="container">
+    {% block content %}
+<h1>{{ current_user.name }}</h1>
 <form class="d-flex" role="search">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success" type="submit">Search</button>
@@ -31,3 +47,10 @@
     {{message}}
 </form>
 {% endblock %}
+
+</main>
+</div>
+
+</body>
+</html>
+

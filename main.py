@@ -221,5 +221,22 @@ def friends():
                            form=form)
 
 
+@app.route('/chat', methods=['GET', 'POST'])
+@login_required
+def chat():
+    form = NewsForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        news = News()
+        news.title = form.title.data
+        news.content = form.content.data
+        news.is_private = form.is_private.data
+        current_user.news.append(news)
+        db_sess.merge(current_user)
+        db_sess.commit()
+        return redirect('/')
+    return render_template('chat.html', title='Друзья и чат',
+                           form=form)
+
 if __name__ == '__main__':
     main()

@@ -2,11 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet"
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
           crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" ></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/static/css/style.css">
     <title>{{ title }}</title>
 
@@ -14,34 +17,35 @@
 
 <body bgcolor="#1b2838" leftmargin="0" topmargin="0">
 <header>
-    <header_inside>
-    <a href="/">
-   <img src="/static/img/logo_steam.png" width="150" height="50" alt="Stem">
-        <a/>
+    <div class="navbar">
+    <a href="/"><img src="/static/img/logo_steam.png" width="150" height="50" alt="Stem"></a>
+
     {% if current_user.is_authenticated %}
-        <div align="center">
+        <div>
         <a href="/library">Библиотека</a>
         </div>
-        <div align="right">
-            {{ current_user.name }}</div>
-        <div align="center">
-        <a href="/friends">Друзья</a>
-        </div>
-         <div align="right">
-        <a href="/logout">Выйти</a>
-        </div>
-    {% else %}
+        <div class="dropdown">
+	  <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ current_user.name }}</a>
+	  <ul class="dropdown-menu">
+		<li><a class="dropdown-item" href="/friends">Друзья</a></li>
+		<li><a class="dropdown-item" href="/logout">Выйти</a></li>
+	  </ul>
+	</div>
 
+    {% else %}
     <div align="right">
         <a href="/login">Войти</a>
             |
         <a href="/register">Зарегистрироваться</a>
-
-    </header_inside>
+ </div>
     </div>
         {% endif %}
 </header>
-
+{% if current_user.is_authenticated %}
+<div class="chat-link">
+    <a onclick="window.open('/chat', '_blank', 'location=yes,height=850,width=600,scrollbars=yes,status=yes');">Друзья и чат</a>
+</div>
+{% endif %}
 <!-- Begin page content -->
 <work_page>
 <main role="main" class="container">
@@ -52,7 +56,7 @@
 <footer>
     <hr>
     <img align="left" src="/static/img/footerLogo_valve_new1.png" width="85" height="25" alt="Stem">
-    <p>© 2023 Volvo Corporation. Все права защищены. Все торговые марки являются собственностью соответствующих владельцев в РФ и других странах.</p>
+    <p>© 2023 Volve Corporation. Все права защищены. Все торговые марки являются собственностью соответствующих владельцев в РФ и других странах.</p>
     <p>НДС включён во все цены, где он применим.</p>
     <hr>
 </footer>
