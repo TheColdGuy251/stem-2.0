@@ -51,7 +51,7 @@ a:active {
 }
 .navbar {
   display: flex;
-  overflow: hidden;
+  overflow: visible !important;
   justify-content: space-around;
   background: #171a21;
   font-size: 20px;
@@ -61,13 +61,14 @@ a:active {
 
 work_page{
   display: block;
+  background: rgba(0, 0, 0, 0.2);
   margin-left: 20%;
-  margin-top: 2%;
   font-size: 16px;
-  max-width: 60%;
-  margin-left: 20%;
+  max-width: 70%;
+  margin-left: 15%;
   color: #8f98a0;
-  padding: 20px;
+  padding: 30px;
+  padding-top: 4%;
   min-height: 100%;
   padding-bottom: 50px;
 }
@@ -79,42 +80,74 @@ height: 100%;
 margin: 0;
 background: #1b2838;
 }
-.dropdown{
-background-color: None;
+
+.btn-secondary.dropdown-toggle{
+background-color: #171a21;
+font-size: 20px;
 outline: none;
 color: #8f98a0;
 border: 0px;
+box-shadow: None;
 }
 
-.dropdown:hover{
-background-color: None;
-outline: none;
-color: #fafafa;
-border: 0px;
-}
-.btn btn-secondary dropdown-toggle{
-background-color: None;
+
+.btn-secondary.dropdown{
+background-color: #171a21;
+font-size: 20px;
 outline: none;
 color: #8f98a0;
 border: 0px;
+box-shadow: None;
+}
+.btn-secondary:hover, .btn-secondary.dropdown-toggle:focus{
+  color: #fafafa;
+  background-color: #171a21;
+  font-size: 20px;
+  border: None
+}
+.btn-secondary:not(:disabled):not(.disabled):active, .btn-secondary:not(:disabled):not(.disabled).active,
+.show > .btn-secondary.dropdown-toggle, .btn-secondary:not(:disabled):not(.disabled):active:focus, .btn-secondary:not(:disabled):not(.disabled).active:focus,
+.show > .btn-secondary.dropdown-toggle:focus {
+  color: #fafafa;
+  background-color: #171a21;
+  font-size: 20px;
+  border: None;
+  box-shadow: None;
 }
 
-.btn btn-secondary dropdown-toggle:hover{
-background-color: None;
-outline: none;
-color: #fafafa;
-border: 0px;
-}
 .dropdown-menu{
 background-color: #171a21;
 outline: none;
 color: #8f98a0;
+font-size: 20px;
 border: 0px;
+box-shadow: None;
 }
-.dropdown-menu:hover{
-background-color: None;
+
+.dropdown-toggle{
+background-color: #171a21;
+outline: none;
+font-size: 20px;
+color: #fafafa;
+border: None;
+box-shadow: None;
+}
+.dropdown-item{
+outline: none;
+color: #8f98a0;
+border: 0px;
+font-size: 20px;
+box-shadow: None;
+background-color: #171a21;
+}
+
+.dropdown-item:hover{
+background-color: #171a21;
+outline: none;
+font-size: 20px;
 color: #fafafa;
 border: 0px;
+box-shadow: None;
 }
 
 .chat-link{
