@@ -202,6 +202,7 @@ def library():
     return render_template('library.html', title='Библиотека',
                            form=form)
 
+
 @app.route('/friends', methods=['GET', 'POST'])
 @login_required
 def friends():
@@ -216,7 +217,7 @@ def friends():
         db_sess.merge(current_user)
         db_sess.commit()
         return redirect('/')
-    return render_template('library.html', title='Библиотека',
+    return render_template('friends.html', title='Друзья',
                            form=form)
 
 
