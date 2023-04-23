@@ -7,7 +7,9 @@ from data.friends import Friends
 from forms.register_form import RegisterForm
 from forms.login_form import LoginForm
 from forms.news_form import NewsForm
+from forms.friends_form import FriendsForm
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from sqlalchemy import text
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -82,6 +84,9 @@ def reqister():
                                    form=form, message="Пароли не совпадают")
         db_sess = db_session.create_session()
         if db_sess.query(User).filter(User.email == form.email.data).first():
+            return render_template('register.html', title='Регистрация',
+                                   form=form, message="Такой пользователь уже есть")
+        if db_sess.query(User).filter(User.name == form.name.data).first():
             return render_template('register.html', title='Регистрация',
                                    form=form, message="Такой пользователь уже есть")
         user = User(
@@ -224,19 +229,61 @@ def friends():
 @app.route('/chat', methods=['GET', 'POST'])
 @login_required
 def chat():
-    form = NewsForm()
+    form = FriendsForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
-        news = News()
-        news.title = form.title.data
-        news.content = form.content.data
-        news.is_private = form.is_private.data
-        current_user.news.append(news)
-        db_sess.merge(current_user)
-        db_sess.commit()
-        return redirect('/')
+        friends = Friends()
+        currentuserid = str(current_user).split()[1]
+        if str(form.friend_id.data).isnumeric():
+            friends.id = form.friend_id.data
+            if db_sess.execute(text(f'select id from friends where id == {form.friend_id.data} '
+                                    f'and user_id == {currentuserid}')).fetchall():
+                form.friend_id.errors.append("Ты уже дружишь с ним")
+            elif int(currentuserid) == int(friends.id[0]):
+                form.friend_id.errors.append("Это ты (У тебя нет друзей или что?)")
+            elif int(form.friend_id.data) > len(db_sess.execute(text('select name from users')).fetchall()):
+                form.friend_id.errors.append("Пользователя не существует (как и твоих друзей)")
+            else:
+                friends.chat = db_sess.execute(text(f'select max(chat) from friends')).fetchall()[0][0]
+                if friends.chat is not None:
+                    friends.chat += 1
+                else:
+                    friends.chat = 0
+                friends.name = db_sess.execute(text(f'select name from users '
+                                                    f'where id == {friends.id}')).fetchall()[0][0]
+                friends.last_played = None
+                friends.user_id = currentuserid
+                current_user.friends.append(friends)
+                db_sess.merge(current_user)
+                db_sess.commit()
+        else:
+            if db_sess.execute(text(f'SELECT id FROM users WHERE name LIKE "{form.friend_id.data}"')).fetchall():
+                ids = db_sess.execute(text(f'SELECT id FROM users WHERE name LIKE "{form.friend_id.data}"')).fetchall()[0]
+                id = str(ids)[1]
+                friends.id = id
+                if db_sess.execute(text(f'select id from friends where id == {friends.id[0]} '
+                                        f'and user_id == {currentuserid}')).fetchall():
+                    form.friend_id.errors.append("Ты уже дружишь с ним")
+                elif int(currentuserid) == int(friends.id[0]):
+                    form.friend_id.errors.append("Это ты (У тебя нет друзей или что?)")
+                else:
+                    friends.chat = db_sess.execute(text(f'select max(chat) from friends')).fetchall()[0][0]
+                    if friends.chat is not None:
+                        friends.chat += 1
+                    else:
+                        friends.chat = 0
+                    friends.name = db_sess.execute(text(f'select name from users where '
+                                                    f'id == {int(friends.id[0])}')).fetchall()[0][0]
+                    friends.last_played = None
+                    friends.user_id = currentuserid
+                    current_user.friends.append(friends)
+                    db_sess.merge(current_user)
+                    db_sess.commit()
+            else:
+                form.friend_id.errors.append("Пользователя не существует (как и твоих друзей)")
     return render_template('chat.html', title='Друзья и чат',
                            form=form)
+
 
 if __name__ == '__main__':
     main()
