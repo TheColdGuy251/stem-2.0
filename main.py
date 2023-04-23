@@ -237,5 +237,6 @@ def chat():
     return render_template('chat.html', title='Друзья и чат',
                            form=form)
 
+
 if __name__ == '__main__':
     main()
