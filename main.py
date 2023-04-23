@@ -227,11 +227,10 @@ def chat():
     form = NewsForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
-        news = News()
-        news.title = form.title.data
-        news.content = form.content.data
-        news.is_private = form.is_private.data
-        current_user.news.append(news)
+        friends = Friends()
+        friends.title = form.title.data
+        friends.content = form.content.data
+        current_user.friends.append(friends)
         db_sess.merge(current_user)
         db_sess.commit()
         return redirect('/')
