@@ -9,6 +9,7 @@ from forms.register_form import RegisterForm
 from forms.login_form import LoginForm
 from forms.news_form import NewsForm
 from forms.add_games_form import AddGamesForm
+from data.store_games import StoreGames
 from forms.friends_form import FriendsForm
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from sqlalchemy import text
