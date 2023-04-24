@@ -7,6 +7,7 @@ from data.games import Games
 from data.messages import Messages
 from data.friends import Friends
 from forms.register_form import RegisterForm
+from forms.chat_form import ChatForm
 from forms.login_form import LoginForm
 from forms.news_form import NewsForm
 from forms.add_games_form import AddGamesForm
@@ -293,10 +294,11 @@ def chat():
 @app.route('/<variable>/chat', methods=['GET', 'POST'])
 @login_required
 def chatters(variable):
+    form = FriendsForm()
     currentuserid = str(current_user).split()[1]
     if currentuserid not in variable.split(";"):
         return redirect("/")
-    return "HELLO"
+    return render_template("chat_dialogue.html", form=form, user=user)
 
 
 @app.route("/store")
