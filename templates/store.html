@@ -13,22 +13,27 @@
 <div class="col-md6 border rounded">
     <h2>{{item.name}}</h2>
     <div>
-        Разработчик - {{item.user.name}}, Дата релиза - {{item.released}}
+        Разработчик - {{item.user.name}}
+    </div>
+    <div align="right">
+        Дата релиза - {{item.released}}
     </div>
     <div>
         {{item.description}}
     </div>
-    <div>
-        <a href="{{item.link}}">{{item.link}}</a>
-    </div>
-    {% if current_user.is_authenticated and current_user == item.user %}
+    {% if current_user.is_authenticated %}
         <div>
+            <a href="/store_games_tolib/{{ item.id }}" class="btn btn-success">
+                Добавить в библиотеку
+            </a>
+            {% if current_user.is_authenticated and current_user == item.user %}
             <a href="/store_games/{{ item.id }}" class="btn btn-warning">
                 Изменить описание
             </a>
             <a href="/store_games_delete/{{ item.id }}" class="btn btn-danger">
                 Удалить из Stem
             </a>
+            {% endif %}
         </div>
     {% endif %}
 </div>

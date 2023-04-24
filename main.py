@@ -195,19 +195,13 @@ def news_delete(id):
 @app.route('/library', methods=['GET', 'POST'])
 @login_required
 def library():
-    form = NewsForm()
-    if form.validate_on_submit():
-        db_sess = db_session.create_session()
-        news = News()
-        news.title = form.title.data
-        news.content = form.content.data
-        news.is_private = form.is_private.data
-        current_user.news.append(news)
-        db_sess.merge(current_user)
-        db_sess.commit()
-        return redirect('/')
-    return render_template('library.html', title='Библиотека',
-                           form=form)
+    db_sess = db_session.create_session()
+    if current_user.is_authenticated:
+        games = db_sess.query(Games).filter(
+            (Games.user == current_user))
+    else:
+        games = db_sess.query(Games).filter(Games.is_private != True)
+    return render_template("library.html", games=games)
 
 
 @app.route('/friends', methods=['GET', 'POST'])
@@ -289,11 +283,7 @@ def chat():
 @app.route("/store")
 def store():
     db_sess = db_session.create_session()
-    if current_user.is_authenticated:
-        store_games = db_sess.query(StoreGames).filter(
-            (StoreGames.user == current_user))
-    else:
-        store_games = db_sess.query(StoreGames).filter(StoreGames.is_private != True)
+    store_games = db_sess.query(StoreGames)
     return render_template("store.html", store_games=store_games)
 
 
@@ -362,6 +352,48 @@ def store_games_delete(id):
     else:
         abort(404)
     return redirect('/store')
+
+
+@app.route('/store_games_tolib/<int:id>', methods=['GET', 'POST'])
+@login_required
+def store_games_tolib(id):
+    db_sess = db_session.create_session()
+    store_games = db_sess.query(StoreGames).filter(StoreGames.id == id).first()
+
+    if store_games:
+        games = Games(
+            id=store_games.id,
+            title=store_games.name,
+            link=store_games.link,
+            user_id=current_user.id,
+        )
+        db_sess.add(games)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect('/store')
+
+
+@app.route('/library_delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def library_delete(id):
+    db_sess = db_session.create_session()
+    games = db_sess.query(Games).filter(Games.id == id,
+                                      Games.user == current_user
+                                      ).first()
+    if games:
+        db_sess.delete(games)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect('/library')
+
+
+@app.route("/profile/<int:id>", methods=['GET', 'POST'])
+def profile(id):
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).filter_by(id=id).first()
+    return render_template("user_profile.html", user=user)
 
 
 if __name__ == '__main__':
