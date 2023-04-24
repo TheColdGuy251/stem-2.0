@@ -286,17 +286,27 @@ def chat():
                 form.friend_id.errors.append("Пользователя не существует (как и твоих друзей)")
     db_sess = db_session.create_session()
     currentuserid = str(current_user).split()[1]
-    chatslist = db_sess.execute(text(f'select * from chats where user1 = {currentuserid} or user2 = {currentuserid}'))
+    chatslist = db_sess.execute(text(f'select * from chats where user1 = {currentuserid} or '
+                                     f'user2 = {currentuserid}')).fetchall()
+    chatsreturn = []
+    for elem in chatslist:
+        chatsname1 = db_sess.execute(text(f'select name from users where id = {elem[1]}')).fetchall()[0][0]
+        chatsname2 = db_sess.execute(text(f'select name from users where id = {elem[2]}')).fetchall()[0][0]
+        chatsum = [chatsname1, chatsname2, elem[0]]
+        chatsreturn.append(chatsum)
     return render_template('chatschild.html', title='Друзья и чаты',
-                           form=form, news=chatslist)
+                           form=form, news=chatsreturn)
 
 
 @app.route('/<variable>/chat', methods=['GET', 'POST'])
 @login_required
 def chatters(variable):
-    form = FriendsForm()
-    currentuserid = str(current_user).split()[1]
-    if currentuserid not in variable.split(";"):
+    form = ChatForm
+    id = str(current_user).split()[1]
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).filter_by(id=id).first()
+    currentusername = str(current_user).split()[2]
+    if currentusername not in variable.split(";")[:2]:
         return redirect("/")
     return render_template("chat_dialogue.html", form=form, user=user)
 
