@@ -297,6 +297,7 @@ def chatters(variable):
         return redirect("/")
     return "HELLO"
 
+
 @app.route("/store")
 def store():
     db_sess = db_session.create_session()
