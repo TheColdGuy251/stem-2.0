@@ -8,6 +8,7 @@ from data.friends import Friends
 from forms.register_form import RegisterForm
 from forms.login_form import LoginForm
 from forms.news_form import NewsForm
+from forms.add_games_form import AddGamesForm
 from forms.friends_form import FriendsForm
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from sqlalchemy import text
@@ -194,6 +195,18 @@ def news_delete(id):
 @app.route('/library', methods=['GET', 'POST'])
 @login_required
 def library():
+    db_sess = db_session.create_session()
+    if current_user.is_authenticated:
+        games = db_sess.query(Games).filter(
+            (Games.user == current_user))
+    else:
+        games = db_sess.query(Games).filter(Games.is_private != True)
+    return render_template("library.html", games=games)
+
+
+@app.route('/friends', methods=['GET', 'POST'])
+@login_required
+def friends():
     form = NewsForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
@@ -205,14 +218,6 @@ def library():
         db_sess.merge(current_user)
         db_sess.commit()
         return redirect('/')
-    return render_template('library.html', title='Библиотека',
-                           form=form)
-
-
-@app.route('/friends', methods=['GET', 'POST'])
-@login_required
-def friends():
-    form = NewsForm()
     return render_template('friends.html', title='Друзья',
                            form=form)
 
@@ -290,6 +295,121 @@ def chatters(variable):
     if currentuserid not in variable.split(";"):
         return redirect("/")
     return "HELLO"
+
+@app.route("/store")
+def store():
+    db_sess = db_session.create_session()
+    store_games = db_sess.query(StoreGames)
+    return render_template("store.html", store_games=store_games)
+
+
+@app.route('/add_games', methods=['GET', 'POST'])
+@login_required
+def adding_games():
+    form = AddGamesForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        add_games = StoreGames()
+        add_games.name = form.name.data
+        add_games.description = form.description.data
+        add_games.link = form.link.data
+        current_user.store_games.append(add_games)
+        db_sess.merge(current_user)
+        db_sess.commit()
+        return redirect('/store')
+    return render_template('add_game.html', title='Добавление игры',
+                           form=form)
+
+
+@app.route('/store_games/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_store_games(id):
+    form = AddGamesForm()
+    if request.method == "GET":
+        db_sess = db_session.create_session()
+        store_games = db_sess.query(StoreGames).filter(StoreGames.id == id,
+                                          StoreGames.user == current_user
+                                          ).first()
+        if store_games:
+            form.name.data = store_games.name
+            form.description.data = store_games.description
+            form.link.data = store_games.link
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        store_games = db_sess.query(StoreGames).filter(StoreGames.id == id,
+                                          StoreGames.user == current_user
+                                          ).first()
+        if store_games:
+            store_games.title = form.name.data
+            store_games.content = form.description.data
+            store_games.is_private = form.link.data
+            db_sess.commit()
+            return redirect('/store')
+        else:
+            abort(404)
+    return render_template('add_game.html',
+                           title='Редактирование игры',
+                           form=form
+                           )
+
+
+@app.route('/store_games_delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def store_games_delete(id):
+    db_sess = db_session.create_session()
+    store_games = db_sess.query(StoreGames).filter(StoreGames.id == id,
+                                      StoreGames.user == current_user
+                                      ).first()
+    if store_games:
+        db_sess.delete(store_games)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect('/store')
+
+
+@app.route('/store_games_tolib/<int:id>', methods=['GET', 'POST'])
+@login_required
+def store_games_tolib(id):
+    db_sess = db_session.create_session()
+    store_games = db_sess.query(StoreGames).filter(StoreGames.id == id).first()
+
+    if store_games:
+        games = Games(
+            id=store_games.id,
+            title=store_games.name,
+            link=store_games.link,
+            user_id=current_user.id,
+        )
+        db_sess.add(games)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect('/store')
+
+
+@app.route('/library_delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def library_delete(id):
+    db_sess = db_session.create_session()
+    games = db_sess.query(Games).filter(Games.id == id,
+                                      Games.user == current_user
+                                      ).first()
+    if games:
+        db_sess.delete(games)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect('/library')
+
+
+@app.route("/profile/<int:id>", methods=['GET', 'POST'])
+def profile(id):
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).filter_by(id=id).first()
+    return render_template("user_profile.html", user=user)
 
 
 if __name__ == '__main__':

@@ -2,26 +2,23 @@
 
 {% block content %}
 <h1>Мои игры</h1>
-{% for item in news%}
+{% for item in games %}
 <div class="col-md6 border rounded">
     <h2>{{item.title}}</h2>
-    <div>
-        {{item.content}}
-    </div>
-    <div>
-        Автор - {{item.user.name}}, Дата написания - {{item.created_date}}
+    <div align="right">
+        Последний запуск - {{item.released}}
     </div>
     {% if current_user.is_authenticated and current_user == item.user %}
         <div>
-            <a href="/news/{{ item.id }}" class="btn btn-warning">
-                Изменить
+            <a href="{{item.link}}" class="btn btn-success" target="_blank">
+                Загрузить
             </a>
-            <a href="/news_delete/{{ item.id }}" class="btn btn-danger">
-                Удалить
+            <a href="/library_delete/{{ item.id }}" class="btn btn-danger">
+                Удалить из библиотеки
             </a>
         </div>
     {% endif %}
 </div>
-
 {% endfor %}
+
 {% endblock %}

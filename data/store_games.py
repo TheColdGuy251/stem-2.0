@@ -5,16 +5,16 @@ from .db_session import SqlAlchemyBase
 from sqlalchemy_serializer import SerializerMixin
 
 
-class Games(SqlAlchemyBase, SerializerMixin):
-    __tablename__ = 'games'
+class StoreGames(SqlAlchemyBase, SerializerMixin):
+    __tablename__ = 'store_games'
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
-    title = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    path = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    description = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    released = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
     link = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    last_played = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
     user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
     user = orm.relationship('User')
 
     def __repr__(self):
-        return f'<Games> {self.id} {self.title} {self.path}'
+        return f'<Store_Games> {self.id} {self.name} {self.description} {self.link}'

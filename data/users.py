@@ -20,6 +20,7 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     games = orm.relationship("Games", back_populates='user')
     friends = orm.relationship("Friends", back_populates='user')
     chats = orm.relationship("Chats", back_populates='user')
+    store_games = orm.relationship("StoreGames", back_populates='user')
 
     def __repr__(self):
         return f'<User> {self.id} {self.name} {self.email}'

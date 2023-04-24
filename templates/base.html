@@ -22,12 +22,15 @@
 
     {% if current_user.is_authenticated %}
         <div>
+        <a href="/store">Магазин</a>
+        </div>
+        <div>
         <a href="/library">Библиотека</a>
         </div>
         <div class="dropdown">
 	  <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ current_user.name }}#{{ current_user.id }}</a>
 	  <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="/{{ current_user.id }}">Профиль</a></li>
+          <li><a class="dropdown-item" href="profile/{{ current_user.id }}">Профиль</a></li>
 		<li><a class="dropdown-item" href="/friends">Добавить в друзья</a></li>
 		<li><a class="dropdown-item" href="/logout">Выйти</a></li>
 	  </ul>
