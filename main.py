@@ -301,14 +301,15 @@ def chat():
 @app.route('/<variable>/chat', methods=['GET', 'POST'])
 @login_required
 def chatters(variable):
-    form = ChatForm
+    form = ChatForm()
     id = str(current_user).split()[1]
     db_sess = db_session.create_session()
     user = db_sess.query(User).filter_by(id=id).first()
     currentusername = str(current_user).split()[2]
     if currentusername not in variable.split(";")[:2]:
         return redirect("/")
-    return render_template("chat_dialogue.html", form=form, user=user)
+    messages = db_sess.query(Messages)
+    return render_template("chat_dialogue.html", form=form, user=user, messages=messages)
 
 
 @app.route("/store")
