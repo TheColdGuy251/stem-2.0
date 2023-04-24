@@ -324,7 +324,8 @@ def chatters(variable):
 def store():
     db_sess = db_session.create_session()
     store_games = db_sess.query(StoreGames)
-    return render_template("store.html", store_games=store_games)
+    games = db_sess.query(Games)
+    return render_template("store.html", store_games=store_games, games=games)
 
 
 @app.route('/add_games', methods=['GET', 'POST'])

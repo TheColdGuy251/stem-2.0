@@ -23,9 +23,11 @@
     </div>
     {% if current_user.is_authenticated %}
         <div>
+            {% if current_user != item. %}
             <a href="/store_games_tolib/{{ item.id }}" class="btn btn-success">
                 Добавить в библиотеку
             </a>
+            {% endif %}
             {% if current_user.is_authenticated and current_user == item.user %}
             <a href="/store_games/{{ item.id }}" class="btn btn-warning">
                 Изменить описание
