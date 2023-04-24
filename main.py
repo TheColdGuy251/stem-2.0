@@ -4,6 +4,7 @@ from data.users import User
 from data.news import News
 from data.chats import Chats
 from data.games import Games
+from data.messages import Messages
 from data.friends import Friends
 from forms.register_form import RegisterForm
 from forms.login_form import LoginForm

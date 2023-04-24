@@ -5,8 +5,8 @@ from .db_session import SqlAlchemyBase
 from sqlalchemy_serializer import SerializerMixin
 
 
-class Message(SqlAlchemyBase, SerializerMixin):
-    __tablename__ = 'chats'
+class Messages(SqlAlchemyBase, SerializerMixin):
+    __tablename__ = 'messages'
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     chatid = sqlalchemy.Column(sqlalchemy.Integer)
