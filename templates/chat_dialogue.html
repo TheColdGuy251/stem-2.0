@@ -15,15 +15,18 @@
 <!-- Begin page content -->
        <div class="overflow-auto">
     {% for item in messages%}
-  <p>item.content</p>
+  <p>{{item[2]}}</p>
   {% endfor %}
         </div>
 <p>
+<form action="" method="post">
+    {{ form.hidden_tag() }}
         <p>
         {{ form.message.label }}<br>
         {{ form.message(class="form-control") }}<br>
     </p>
 <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+    </form>
 
 {% block content %}{% endblock %}
 
