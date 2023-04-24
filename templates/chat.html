@@ -31,8 +31,9 @@
     <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
         {{message}}
 </form>
-    {% block content %}{% endblock %}
+
 </main>
+        {% block content %}{% endblock %}
 </div>
 
 {% for item in user%}
