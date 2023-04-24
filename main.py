@@ -302,21 +302,25 @@ def chat():
 @login_required
 def chatters(variable):
     form = ChatForm()
+    db_sess = db_session.create_session()
+    vari = variable.split(";")
+    currentusername = str(current_user).split()[2]
     if form.validate_on_submit():
-        db_sess = db_session.create_session()
-        messages = Messages()
-        messages.content = form.message.data
+        content = form.message.data
+        chatid = vari[2]
+        user1 = currentusername
+        messages = Messages(content=content,
+                            chatid=chatid,
+                            username=user1)
         current_user.messages.append(messages)
         db_sess.merge(current_user)
         db_sess.commit()
-        return redirect('/<variable>/chat')
     id = str(current_user).split()[1]
-    db_sess = db_session.create_session()
     user = db_sess.query(User).filter_by(id=id).first()
-    currentusername = str(current_user).split()[2]
     if currentusername not in variable.split(";")[:2]:
         return redirect("/")
-    messages = db_sess.query(Messages)
+    messages = db_sess.execute(text(f'select * from messages where chatid = {vari[2]}')).fetchall()
+    print(messages)
     return render_template("chat_dialogue.html", form=form, user=user, messages=messages)
 
 
