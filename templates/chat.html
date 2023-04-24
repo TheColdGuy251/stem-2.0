@@ -16,40 +16,32 @@
 <!-- Begin page content -->
 <div class="chat-style">
 <main role="main" class="container">
-    {% block content %}
 <h1>{{ current_user.name }}</h1>
-<form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
-<form action="" method="post">
-    {{ form.hidden_tag() }}
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
     <p>
-        {{ form.title.label }}<br>
-        {{ form.title(class="form-control") }}<br>
-        {% for error in form.title.errors %}
-            <p class="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-        {% endfor %}
-    </p>
-    <p>
-        {{ form.content.label }}<br>
-        {{ form.content(class="form-control") }}<br>
-        {% for error in form.content.errors %}
+        {{ form.friend_id.label }}<br>
+        {{ form.friend_id(class="form-control") }}<br>
+        {% for error in form.friend_id.errors %}
             <p content="alert alert-danger" role="alert">
                 {{ error }}
             </p>
         {% endfor %}
     </p>
-    <p>{{ form.is_private() }} {{ form.is_private.label }}</p>
     <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
-    {{message}}
+        {{message}}
 </form>
-{% endblock %}
-
+    {% block content %}{% endblock %}
 </main>
 </div>
+
+{% for item in user%}
+<div class="col-md6 border rounded">
+    <a onclick="window.open('/chat/{{ item.friends }}', '_blank', 'location=yes,height=850,width=850,scrollbars=yes,status=yes');"><h2>{{item.friends}}</h2></a>
+    {% endfor %}
+</div>
+
+
 
 </body>
 </html>

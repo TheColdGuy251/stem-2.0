@@ -6,4 +6,4 @@ from wtforms.validators import DataRequired
 
 class FriendsForm(FlaskForm):
     friend_id = TextAreaField('Друзья', validators=[DataRequired()])
-    submit = SubmitField('Применить')
+    submit = SubmitField('Добавить В Друзья')
