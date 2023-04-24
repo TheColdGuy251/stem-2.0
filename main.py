@@ -301,7 +301,15 @@ def chat():
 @app.route('/<variable>/chat', methods=['GET', 'POST'])
 @login_required
 def chatters(variable):
-    form = ChatForm
+    form = ChatForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        messages = Messages()
+        messages.content = form.message.data
+        current_user.messages.append(messages)
+        db_sess.merge(current_user)
+        db_sess.commit()
+        return redirect('/<variable>/chat')
     id = str(current_user).split()[1]
     db_sess = db_session.create_session()
     user = db_sess.query(User).filter_by(id=id).first()
