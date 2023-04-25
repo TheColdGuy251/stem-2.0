@@ -49,10 +49,7 @@
             </p>
         {% endfor %}
     </p>
-
-    {% if file_url %}
-    <img src="{{file_url}}">
-    {% endif %}
+        <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
     {{message}}
 </form>
 {% endblock %}
