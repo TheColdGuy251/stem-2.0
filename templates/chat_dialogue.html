@@ -56,12 +56,12 @@ a:active {
 <!-- Begin page content -->
        <div class="overflow-auto">
     {% for item in messages%}
-         {% if item[0] == curent_user.name %}
-  <p align="right">{{item[3]}}</p>
-  <p align="right">{{item[2]}}</p>
+         {% if item[4] == curentusername %}
+  <h6 align="right">{{item[3]}}</h6>
+  <h3 align="right">{{item[2]}}</h3>
            {% else %}
-             <p align="left">{{item[3]}}</p>
-             <p align="left">{{item[1]}}</p>
+             <h6 align="left">{{item[3]}}</h6>
+             <h3 align="left">{{item[2]}}</h3>
 {% endif %}
   {% endfor %}
         </div>

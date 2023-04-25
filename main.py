@@ -1,6 +1,5 @@
 from flask import Flask, render_template, redirect, request, make_response, session, abort, jsonify, url_for,\
     send_from_directory
-from flask_uploads import UploadSet, IMAGES, configure_uploads
 from data import db_session, news_api
 from data.users import User
 from data.news import News
@@ -18,15 +17,10 @@ from data.store_games import StoreGames
 from forms.friends_form import FriendsForm
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from sqlalchemy import text
-from flask_avatars import Avatars
 
 
 app = Flask(__name__)
-avatars = Avatars(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
-app.config['UPLOADED_PHOTOS_DEST'] = "uploads"
-images = UploadSet("photos", IMAGES)
-configure_uploads(app, images)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -97,12 +91,6 @@ def get_file(filename):
 @app.route('/register', methods=['GET', 'POST'])
 def reqister():
     form = RegisterForm()
-    form1 = UploadForm()
-    if form1.image.data:
-        filename = images.save(form1.image.data)
-        file_url = url_for("get_file", filename=filename)
-    else:
-        file_url = None
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
             return render_template('register.html', title='Регистрация',
@@ -124,7 +112,7 @@ def reqister():
         db_sess.commit()
         return redirect('/login')
 
-    return render_template('register.html', title='Регистрация', form=form, form1=form1, file_url=file_url)
+    return render_template('register.html', title='Регистрация', form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -326,6 +314,7 @@ def chatters(variable):
     db_sess = db_session.create_session()
     vari = variable.split(";")
     currentusername = str(current_user).split()[2]
+    currentuseid = str(current_user).split()[1]
     if form.validate_on_submit():
         content = form.message.data
         chatid = vari[2]
@@ -342,7 +331,9 @@ def chatters(variable):
     if currentusername not in variable.split(";")[:2]:
         return redirect("/")
     messages = db_sess.execute(text(f'select * from messages where chatid = {vari[2]}')).fetchall()
-    return render_template("chat_dialogue.html", form=form, user=user, messages=messages)
+    print(currentuseid)
+    print(messages[-1][4])
+    return render_template("chat_dialogue.html", form=form, user=user, messages=messages, curentusername=int(currentuseid))
 
 
 @app.route("/store")
@@ -424,14 +415,18 @@ def store_games_delete(id):
 @login_required
 def store_games_tolib(id):
     db_sess = db_session.create_session()
+    currentuseid = str(current_user).split()[1]
     store_games = db_sess.query(StoreGames).filter(StoreGames.id == id).first()
-
+    lib_games = db_sess.query(Games).filter(Games.gameid == id and Games.user_id == currentuseid).first()
     if store_games:
+        if lib_games:
+            return redirect('/store')
+            print("error")
         games = Games(
-            id=store_games.id,
+            gameid=store_games.id,
             title=store_games.name,
             link=store_games.link,
-            user_id=current_user.id,
+            user_id=currentuseid,
         )
         db_sess.add(games)
         db_sess.commit()

@@ -14,6 +14,7 @@ class Games(SqlAlchemyBase, SerializerMixin):
     link = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     last_played = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
     user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
+    gameid = sqlalchemy.Column(sqlalchemy.Integer)
     user = orm.relationship('User')
 
     def __repr__(self):
