@@ -175,5 +175,16 @@ margin-top: 5%;
 display: grid;
 grid-template-columns: 60% 40% 20%;
 }
+.profile_description{
+padding-top:7%;
+line-height: 3;
+}
+dl {
+   margin-bottom: 10px;
+   font-size: 25px;
+}
+dd{
+margin-left: 3%;
+}
 
 

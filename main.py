@@ -1,6 +1,5 @@
 from flask import Flask, render_template, redirect, request, make_response, session, abort, jsonify, url_for,\
     send_from_directory
-from flask_uploads import UploadSet, IMAGES, configure_uploads
 from data import db_session, news_api
 from data.users import User
 from data.news import News
@@ -8,7 +7,6 @@ from data.chats import Chats
 from data.games import Games
 from data.messages import Messages
 from data.friends import Friends
-from forms.upload_image_form import UploadForm
 from forms.register_form import RegisterForm
 from forms.chat_form import ChatForm
 from forms.login_form import LoginForm
@@ -24,9 +22,6 @@ from flask_avatars import Avatars
 app = Flask(__name__)
 avatars = Avatars(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
-app.config['UPLOADED_PHOTOS_DEST'] = "uploads"
-images = UploadSet("photos", IMAGES)
-configure_uploads(app, images)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -97,12 +92,6 @@ def get_file(filename):
 @app.route('/register', methods=['GET', 'POST'])
 def reqister():
     form = RegisterForm()
-    form1 = UploadForm()
-    if form1.image.data:
-        filename = images.save(form1.image.data)
-        file_url = url_for("get_file", filename=filename)
-    else:
-        file_url = None
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
             return render_template('register.html', title='Регистрация',
@@ -124,7 +113,7 @@ def reqister():
         db_sess.commit()
         return redirect('/login')
 
-    return render_template('register.html', title='Регистрация', form=form, form1=form1, file_url=file_url)
+    return render_template('register.html', title='Регистрация', form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])
