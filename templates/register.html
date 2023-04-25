@@ -49,7 +49,20 @@
             </p>
         {% endfor %}
     </p>
+
+    <form method="post" enctype="multipart/form-data">
+    {{form.hidden_tag()}}
+    {% for error in form1.image.errors %}
+        <span style="color: red;">{{ error }}</span>
+    {% endfor %}
+    {{ form1.image(class="form-control")}}
+     {{ form1.submit_image(class="btn btn-success") }}
     <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+</form>
+
+    {% if file_url %}
+    <img src="{{file_url}}">
+    {% endif %}
     {{message}}
 </form>
 {% endblock %}

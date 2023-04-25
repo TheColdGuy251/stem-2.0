@@ -1,4 +1,6 @@
-from flask import Flask, render_template, redirect, request, make_response, session, abort, jsonify
+from flask import Flask, render_template, redirect, request, make_response, session, abort, jsonify, url_for,\
+    send_from_directory
+from flask_uploads import UploadSet, IMAGES, configure_uploads
 from data import db_session, news_api
 from data.users import User
 from data.news import News
@@ -6,6 +8,7 @@ from data.chats import Chats
 from data.games import Games
 from data.messages import Messages
 from data.friends import Friends
+from forms.upload_image_form import UploadForm
 from forms.register_form import RegisterForm
 from forms.chat_form import ChatForm
 from forms.login_form import LoginForm
@@ -15,9 +18,15 @@ from data.store_games import StoreGames
 from forms.friends_form import FriendsForm
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from sqlalchemy import text
+from flask_avatars import Avatars
+
 
 app = Flask(__name__)
+avatars = Avatars(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+app.config['UPLOADED_PHOTOS_DEST'] = "uploads"
+images = UploadSet("photos", IMAGES)
+configure_uploads(app, images)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -80,9 +89,20 @@ def index():
     return render_template("index.html", news=news)
 
 
+@app.route('/uploads/<filename>')
+def get_file(filename):
+    return send_from_directory(app.config['UPLOADED_PHOTOS_DEST'], filename)
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def reqister():
     form = RegisterForm()
+    form1 = UploadForm()
+    if form1.image.data:
+        filename = images.save(form1.image.data)
+        file_url = url_for("get_file", filename=filename)
+    else:
+        file_url = None
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
             return render_template('register.html', title='Регистрация',
@@ -103,7 +123,8 @@ def reqister():
         db_sess.add(user)
         db_sess.commit()
         return redirect('/login')
-    return render_template('register.html', title='Регистрация', form=form)
+
+    return render_template('register.html', title='Регистрация', form=form, form1=form1, file_url=file_url)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -292,7 +313,7 @@ def chat():
     for elem in chatslist:
         chatsname1 = db_sess.execute(text(f'select name from users where id = {elem[1]}')).fetchall()[0][0]
         chatsname2 = db_sess.execute(text(f'select name from users where id = {elem[2]}')).fetchall()[0][0]
-        chatsum = [chatsname1, chatsname2, elem[0]]
+        chatsum = [chatsname1, chatsname2, elem[0], elem[1], elem[2]]
         chatsreturn.append(chatsum)
     return render_template('chatschild.html', title='Друзья и чаты',
                            form=form, news=chatsreturn)
@@ -315,12 +336,12 @@ def chatters(variable):
         current_user.messages.append(messages)
         db_sess.merge(current_user)
         db_sess.commit()
+        form.message.data = None
     id = str(current_user).split()[1]
     user = db_sess.query(User).filter_by(id=id).first()
     if currentusername not in variable.split(";")[:2]:
         return redirect("/")
     messages = db_sess.execute(text(f'select * from messages where chatid = {vari[2]}')).fetchall()
-    print(messages)
     return render_template("chat_dialogue.html", form=form, user=user, messages=messages)
 
 
@@ -371,9 +392,9 @@ def edit_store_games(id):
                                           StoreGames.user == current_user
                                           ).first()
         if store_games:
-            store_games.title = form.name.data
-            store_games.content = form.description.data
-            store_games.is_private = form.link.data
+            store_games.name = form.name.data
+            store_games.description = form.description.data
+            store_games.link = form.link.data
             db_sess.commit()
             return redirect('/store')
         else:
