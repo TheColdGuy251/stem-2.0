@@ -5,9 +5,6 @@
 {% for item in games %}
 <div class="col-md6 border rounded">
     <h2>{{item.title}}</h2>
-    <div align="right">
-        Последний запуск - {{item.released}}
-    </div>
     {% if current_user.is_authenticated and current_user == item.user %}
         <div>
             <a href="{{item.link}}" class="btn btn-success" target="_blank">

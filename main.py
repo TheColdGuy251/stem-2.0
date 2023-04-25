@@ -7,7 +7,6 @@ from data.chats import Chats
 from data.games import Games
 from data.messages import Messages
 from data.friends import Friends
-from forms.upload_image_form import UploadForm
 from forms.register_form import RegisterForm
 from forms.chat_form import ChatForm
 from forms.login_form import LoginForm
