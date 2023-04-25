@@ -1,0 +1,26 @@
+{% extends "friendhub.html" %}
+
+{% block content %}
+<h1>Ваши Чаты</h1>
+{% for item in news%}
+<div class="col-md6 border rounded">
+    {% if current_user.name == item[1]%}
+        {% if current_user.id == item[3]%}
+    <h2><a href="/profile/{{item[3]}}">{{item[0]}}</a></h2>
+        {% else %}
+    <h2><a href="/profile/{{item[3]}}">{{item[0]}}</a></h2>
+    {% endif %}
+    {% else %}
+    {% if current_user.id == item[4] %}
+    <h2><a href="/profile/{{item[4]}}">{{item[1]}}</a></h2>
+    {% else %}
+    <h2><a href="/profile/{{item[4]}}">{{item[1]}}</a></h2>
+    {% endif %}
+    {% endif %}
+    <div>
+        <a href="/{{item[0]}};{{item[1]}};{{item[2]}}/chat" class="btn btn-success">Перейти в чат</a>
+    </div>
+</div>
+
+{% endfor %}
+{% endblock %}

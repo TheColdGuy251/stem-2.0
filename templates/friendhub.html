@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <title>{{ title }}</title>
+
+</head>
+
+<body bgcolor="#1b2838" leftmargin="0" topmargin="0">
+<!-- Begin page content -->
+<div class="chat-style">
+<main role="main" class="container">
+<h1>{{ current_user.name }}</h1>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+    <p>
+        {{ form.friend_id.label }}<br>
+        {{ form.friend_id(class="form-control") }}<br>
+        {% for error in form.friend_id.errors %}
+            <p content="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+        {{message}}
+</form>
+
+</main>
+        {% block content %}{% endblock %}
+</div>
+
+{% for item in user%}
+<div class="col-md6 border rounded">
+    <a onclick="window.open('/chat/{{ item.friends }}', '_blank', 'location=yes,height=850,width=850,scrollbars=yes,status=yes');"><h2>{{item.friends}}</h2></a>
+    {% endfor %}
+</div>
+
+
+
+</body>
+</html>
+

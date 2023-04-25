@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Друзья</h1>
+<form class="d-flex" role="search">
+        <input class="form-control me-2" type="search" placeholder="Введите никнейм или id пользователя" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Добавить</button>
+      </form>
+<div class="parallel">
+<h2>Входящие запросы дружбы</h2>
+<h2>Исходящие запросы дружбы</h2>
+    </div>
+{% endblock %}
