@@ -330,8 +330,6 @@ def chatters(variable):
     if currentusername not in variable.split(";")[:2]:
         return redirect("/")
     messages = db_sess.execute(text(f'select * from messages where chatid = {vari[2]}')).fetchall()
-    print(currentuseid)
-    print(messages[-1][4])
     return render_template("chat_dialogue.html", form=form, user=user, messages=messages, curentusername=int(currentuseid))
 
 
