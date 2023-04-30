@@ -9,9 +9,9 @@ class Games(SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'games'
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
-    title = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    title = sqlalchemy.Column(sqlalchemy.String)
     path = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    link = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    link = sqlalchemy.Column(sqlalchemy.String)
     last_played = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
     user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
     gameid = sqlalchemy.Column(sqlalchemy.Integer)

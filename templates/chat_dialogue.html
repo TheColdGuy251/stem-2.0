@@ -1,67 +1,14 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <link rel="stylesheet"
-          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-          crossorigin="anonymous">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>{{ title }}</title>
+{% extends "base_mini.html" %}
+{% block content %}
 
-    <style>
-.chat-box{
-position: fixed;
-left: 0%;
-top: 80%;
-min-width: 100%;
-}
-
-.overflow-auto{
-min-width: 100%;
-max-height: 75%;
-color: #fafafa;
-}
-body, html{
-height: 100%;
-margin: 0;
-background: #1b2838;
-}
-a:link {
-color: #8f98a0;
-background-color: transparent;
-text-decoration: none;
-}
-
-a:visited {
-  color: #8f98a0;
-  background-color: transparent;
-  text-decoration: none;
-}
-
-a:hover {
-  color: #fafafa;
-  background-color: transparent;
-  text-decoration: none;
-}
-
-a:active {
-  color: #fafafa;
-  background-color: transparent;
-  text-decoration: none;
-}
-    </style>
-</head>
-<body class="mini">
-<!-- Begin page content -->
        <div class="overflow-auto">
-    {% for item in messages%}
+           {% for item in messages%}
          {% if item[4] == curentusername %}
-  <h6 align="right">{{item[3]}}</h6>
-  <h3 align="right">{{item[2]}}</h3>
+  <h6 align="right" style="padding-right: 10px">{{item[3]}}</h6>
+  <h3 align="right" style="padding-right: 5px">{{item[2]}}</h3>
            {% else %}
-             <h6 align="left">{{item[3]}}</h6>
-             <h3 align="left">{{item[2]}}</h3>
+             <h6 align="left" style="padding-left: 10px">{{item[3]}}</h6>
+             <h3 align="left" style="padding-left: 5px">{{item[2]}}</h3>
 {% endif %}
   {% endfor %}
         </div>
@@ -72,13 +19,9 @@ a:active {
     {{ form.hidden_tag() }}
     <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
         <p>
-        {{ form.message.label }}<br>
         {{ form.message(class="form-control") }}<br>
     </p>
 
     </form>
 </div>
-{% block content %}{% endblock %}
-
-</body>
-</html>
+{% endblock %}

@@ -6,15 +6,15 @@
 <div class="col-md6 border rounded">
     {% if current_user.name == item[1]%}
         {% if current_user.id == item[3]%}
-    <h2><a href="/profile/{{item[3]}}">{{item[0]}}</a></h2>
+    <h2><a href="/profile_mini/{{item[3]}}">{{item[0]}}</a></h2>
         {% else %}
-    <h2><a href="/profile/{{item[3]}}">{{item[0]}}</a></h2>
+    <h2><a href="/profile_mini/{{item[3]}}">{{item[0]}}</a></h2>
     {% endif %}
     {% else %}
     {% if current_user.id == item[4] %}
-    <h2><a href="/profile/{{item[4]}}">{{item[1]}}</a></h2>
+    <h2><a href="/profile_mini/{{item[4]}}">{{item[1]}}</a></h2>
     {% else %}
-    <h2><a href="/profile/{{item[4]}}">{{item[1]}}</a></h2>
+    <h2><a href="/profile_mini/{{item[4]}}">{{item[1]}}</a></h2>
     {% endif %}
     {% endif %}
     <div>

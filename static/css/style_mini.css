@@ -1,0 +1,75 @@
+.chat-box{
+position: fixed;
+left: 0%;
+top: 80%;
+min-width: 100%;
+}
+
+.overflow-auto{
+min-width: 100%;
+max-height: 75%;
+color: #fafafa;
+}
+body, html{
+height: 100%;
+margin: 0;
+background: #1b2838;
+}
+a:link {
+color: #8f98a0;
+background-color: transparent;
+text-decoration: none;
+}
+
+a:visited {
+  color: #8f98a0;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #fafafa;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+a:active {
+  color: #fafafa;
+  background-color: transparent;
+  text-decoration: none;
+}
+h6 {
+color: #8f98a0
+}
+header{
+display: block;
+padding: 5px;
+background: #171a21;
+color: #878684;
+}
+.profile_description{
+padding-top:7%;
+line-height: 3;
+}
+dl {
+   margin-bottom: 10px;
+   font-size: 25px;
+}
+dd{
+margin-left: 3%;
+}
+work_page{
+  display: block;
+  margin-left: 20%;
+  font-size: 16px;
+  max-width: 70%;
+  margin-left: 15%;
+  color: #8f98a0;
+  padding: 30px;
+  padding-top: 4%;
+  min-height: 100%;
+  padding-bottom: 50px;
+}
+#out {
+    height: 75%;
+}

@@ -101,6 +101,9 @@ def reqister():
         if db_sess.query(User).filter(User.name == form.name.data).first():
             return render_template('register.html', title='Регистрация',
                                    form=form, message="Такой пользователь уже есть")
+        if " " in form.name.data:
+            return render_template('register.html', title='Регистрация',
+                                   form=form, message="Нельзя использовать пробел в имени")
         user = User(
             name=form.name.data,
             email=form.email.data,
@@ -325,6 +328,7 @@ def chatters(variable):
         db_sess.merge(current_user)
         db_sess.commit()
         form.message.data = None
+        return redirect(f"/{variable}/chat")
     id = str(current_user).split()[1]
     user = db_sess.query(User).filter_by(id=id).first()
     if currentusername not in variable.split(";")[:2]:
@@ -414,19 +418,17 @@ def store_games_tolib(id):
     db_sess = db_session.create_session()
     currentuseid = str(current_user).split()[1]
     store_games = db_sess.query(StoreGames).filter(StoreGames.id == id).first()
-    lib_games = db_sess.query(Games).filter(Games.gameid == id and Games.user_id == currentuseid).first()
+    games = db_sess.query(Games).filter(Games.gameid == id, Games.user == current_user).first()
     if store_games:
-        if lib_games:
-            return redirect('/store')
-            print("error")
-        games = Games(
-            gameid=store_games.id,
-            title=store_games.name,
-            link=store_games.link,
-            user_id=currentuseid,
-        )
-        db_sess.add(games)
-        db_sess.commit()
+        if not games:
+            games = Games(
+                gameid=store_games.id,
+                title=store_games.name,
+                link=store_games.link,
+                user_id=currentuseid,
+            )
+            db_sess.add(games)
+            db_sess.commit()
     else:
         abort(404)
     return redirect('/store')
@@ -453,6 +455,10 @@ def profile(id):
     user = db_sess.query(User).filter_by(id=id).first()
     return render_template("user_profile.html", user=user)
 
-
+@app.route("/profile_mini/<int:id>", methods=['GET', 'POST'])
+def profile_mini(id):
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).filter_by(id=id).first()
+    return render_template("profile_mini.html", user=user)
 if __name__ == '__main__':
     main()
