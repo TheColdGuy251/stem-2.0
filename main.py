@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, make_response, session, abort, jsonify, url_for,\
+from flask import Flask, render_template, redirect, request, make_response, session, abort, jsonify, url_for, \
     send_from_directory
 from data import db_session, news_api
 from data.users import User
@@ -16,7 +16,6 @@ from data.store_games import StoreGames
 from forms.friends_form import FriendsForm
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from sqlalchemy import text
-
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -47,30 +46,7 @@ def load_user(user_id):
     return db_sess.query(User).get(user_id)
 
 
-@app.route("/cookie_test")
-def cookie_test():
-    visits_count = int(request.cookies.get("visits_count", 0))
-    if visits_count:
-        res = make_response(
-            f"Вы пришли на эту страницу {visits_count + 1} раз")
-        res.set_cookie("visits_count", str(visits_count + 1),
-                       max_age=60 * 60 * 24 * 365 * 2)
-    else:
-        res = make_response(
-            "Вы пришли на эту страницу в первый раз за последние 2 года")
-        res.set_cookie("visits_count", '1',
-                       max_age=60 * 60 * 24 * 365 * 2)
-    return res
-
-
-@app.route("/session_test")
-def session_test():
-    visits_count = session.get('visits_count', 0)
-    session['visits_count'] = visits_count + 1
-    return make_response(
-        f"Вы пришли на эту страницу {visits_count + 1} раз")
-
-
+# главная страница (здесь отображаются новости)
 @app.route("/")
 def index():
     db_sess = db_session.create_session()
@@ -82,11 +58,7 @@ def index():
     return render_template("index.html", news=news)
 
 
-@app.route('/uploads/<filename>')
-def get_file(filename):
-    return send_from_directory(app.config['UPLOADED_PHOTOS_DEST'], filename)
-
-
+# регистрация аккаунта
 @app.route('/register', methods=['GET', 'POST'])
 def reqister():
     form = RegisterForm()
@@ -117,6 +89,7 @@ def reqister():
     return render_template('register.html', title='Регистрация', form=form)
 
 
+# вход в аккаунт
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -132,6 +105,7 @@ def login():
     return render_template('login.html', title='Авторизация', form=form)
 
 
+# выход из аккаунта
 @app.route('/logout')
 @login_required
 def logout():
@@ -139,6 +113,7 @@ def logout():
     return redirect("/")
 
 
+# окно добавления новости
 @app.route('/news', methods=['GET', 'POST'])
 @login_required
 def add_news():
@@ -157,6 +132,7 @@ def add_news():
                            form=form)
 
 
+# изменение новости
 @app.route('/news/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_news(id):
@@ -191,6 +167,7 @@ def edit_news(id):
                            )
 
 
+# удаление новости
 @app.route('/news_delete/<int:id>', methods=['GET', 'POST'])
 @login_required
 def news_delete(id):
@@ -206,6 +183,7 @@ def news_delete(id):
     return redirect('/')
 
 
+# страница магазина
 @app.route('/library', methods=['GET', 'POST'])
 @login_required
 def library():
@@ -218,24 +196,7 @@ def library():
     return render_template("library.html", games=games)
 
 
-@app.route('/friends', methods=['GET', 'POST'])
-@login_required
-def friends():
-    form = NewsForm()
-    if form.validate_on_submit():
-        db_sess = db_session.create_session()
-        news = News()
-        news.title = form.title.data
-        news.content = form.content.data
-        news.is_private = form.is_private.data
-        current_user.news.append(news)
-        db_sess.merge(current_user)
-        db_sess.commit()
-        return redirect('/')
-    return render_template('friends.html', title='Друзья',
-                           form=form)
-
-
+# окно чатов
 @app.route('/chat', methods=['GET', 'POST'])
 @login_required
 def chat():
@@ -262,7 +223,7 @@ def chat():
                 else:
                     chats.id = 1
                 chats.name = db_sess.execute(text(f'select name from users '
-                                                    f'where id == {chats.user2}')).fetchall()[0][0]
+                                                  f'where id == {chats.user2}')).fetchall()[0][0]
                 chats.user_id = currentuserid
                 current_user.chats.append(chats)
                 db_sess.merge(current_user)
@@ -309,6 +270,7 @@ def chat():
                            form=form, news=chatsreturn)
 
 
+# страница переписки
 @app.route('/<variable>/chat', methods=['GET', 'POST'])
 @login_required
 def chatters(variable):
@@ -334,9 +296,11 @@ def chatters(variable):
     if currentusername not in variable.split(";")[:2]:
         return redirect("/")
     messages = db_sess.execute(text(f'select * from messages where chatid = {vari[2]}')).fetchall()
-    return render_template("chat_dialogue.html", form=form, user=user, messages=messages, curentusername=int(currentuseid))
+    return render_template("chat_dialogue.html", form=form, user=user, messages=messages,
+                           curentusername=int(currentuseid))
 
 
+# страница магазина
 @app.route("/store")
 def store():
     db_sess = db_session.create_session()
@@ -345,6 +309,7 @@ def store():
     return render_template("store.html", store_games=store_games, games=games)
 
 
+# добавление игры в магазин
 @app.route('/add_games', methods=['GET', 'POST'])
 @login_required
 def adding_games():
@@ -363,6 +328,7 @@ def adding_games():
                            form=form)
 
 
+# изменение описания игры в магазине
 @app.route('/store_games/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_store_games(id):
@@ -370,8 +336,8 @@ def edit_store_games(id):
     if request.method == "GET":
         db_sess = db_session.create_session()
         store_games = db_sess.query(StoreGames).filter(StoreGames.id == id,
-                                          StoreGames.user == current_user
-                                          ).first()
+                                                       StoreGames.user == current_user
+                                                       ).first()
         if store_games:
             form.name.data = store_games.name
             form.description.data = store_games.description
@@ -381,8 +347,8 @@ def edit_store_games(id):
     if form.validate_on_submit():
         db_sess = db_session.create_session()
         store_games = db_sess.query(StoreGames).filter(StoreGames.id == id,
-                                          StoreGames.user == current_user
-                                          ).first()
+                                                       StoreGames.user == current_user
+                                                       ).first()
         if store_games:
             store_games.name = form.name.data
             store_games.description = form.description.data
@@ -397,13 +363,14 @@ def edit_store_games(id):
                            )
 
 
+# добавление игры из магазина
 @app.route('/store_games_delete/<int:id>', methods=['GET', 'POST'])
 @login_required
 def store_games_delete(id):
     db_sess = db_session.create_session()
     store_games = db_sess.query(StoreGames).filter(StoreGames.id == id,
-                                      StoreGames.user == current_user
-                                      ).first()
+                                                   StoreGames.user == current_user
+                                                   ).first()
     if store_games:
         db_sess.delete(store_games)
         db_sess.commit()
@@ -412,6 +379,7 @@ def store_games_delete(id):
     return redirect('/store')
 
 
+# добавление игры из магазина в библиотеку
 @app.route('/store_games_tolib/<int:id>', methods=['GET', 'POST'])
 @login_required
 def store_games_tolib(id):
@@ -434,13 +402,14 @@ def store_games_tolib(id):
     return redirect('/store')
 
 
+# удаление игры из библиотеки
 @app.route('/library_delete/<int:id>', methods=['GET', 'POST'])
 @login_required
 def library_delete(id):
     db_sess = db_session.create_session()
     games = db_sess.query(Games).filter(Games.id == id,
-                                      Games.user == current_user
-                                      ).first()
+                                        Games.user == current_user
+                                        ).first()
     if games:
         db_sess.delete(games)
         db_sess.commit()
@@ -449,16 +418,21 @@ def library_delete(id):
     return redirect('/library')
 
 
+# переход в профиль
 @app.route("/profile/<int:id>", methods=['GET', 'POST'])
 def profile(id):
     db_sess = db_session.create_session()
     user = db_sess.query(User).filter_by(id=id).first()
     return render_template("user_profile.html", user=user)
 
+
+# переход в профиль из чата
 @app.route("/profile_mini/<int:id>", methods=['GET', 'POST'])
 def profile_mini(id):
     db_sess = db_session.create_session()
     user = db_sess.query(User).filter_by(id=id).first()
     return render_template("profile_mini.html", user=user)
+
+
 if __name__ == '__main__':
     main()
